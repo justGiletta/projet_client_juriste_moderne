@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}-
+	{{app.user.structure.name}}
+{% endblock %}
+
+{% block navbar %}
+	{% include 'admin/_navbarAdmin.html.twig' %}
+{% endblock %}
+
+{% block body %}
+<div class="main_content pt-2">
+	<h1 class="h1structure text-left me-5 mt-3">{{app.user.structure.name}}</h1>
+	<h1 class="text-left mt-2">Dirigeants</h1>
+    <div class="d-flex justify-content-start my-4">
+        <a class="button button-light d-flex align-items-end" href="{{ path('structure_index', {'id': app.user.structure.id}) }}">Retour</a>
+    </div>
+        {% if is_granted("ROLE_ADMIN") %}
+    <div class="d-flex justify-content-end my-4">
+        <a class="button button-light d-flex align-items-end" href="{{ path('members_index') }}">Ajouter</a>
+    </div>
+        {% endif %}
+
+    <table class="table table-striped cat_table table-responsive-stack" id="tableOne">
+        <thead>
+            <tr>
+                <th>DIRIGEANT</th>
+                <th>TYPE DE MANDAT</th>
+                <th>DEBUT DU MANDAT</th>
+                <th>FIN DU MANDAT</th>
+                <th>LIMITE DU MANDAT</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for executive in executives %}
+            {% if executive.mandateStartDate is not null %}
+            <tr>
+                <td>{{ executive.legalPerson ? : executive.naturalPerson }}</td>
+                <td>{{ executive.mandateType }}</td>
+                <td>{{ executive.mandateStartdate ? executive.mandateStartdate|date("d/m/Y") : '' }}</td>
+                <td>{{ executive.mandateEnddate ? executive.mandateEnddate|date("d/m/Y") : '' }}</td>
+                <td>{{ executive.mandateLimitations ? : '' }}</td>
+                <td>
+                    {% if is_granted("ROLE_ADMIN") %}
+                    <a class="button button-light" href="{{ path('members_index') }}">Modifier</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+        {% else %}
+            <tr>
+                <td colspan="9">Aucune catégorie trouvée</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

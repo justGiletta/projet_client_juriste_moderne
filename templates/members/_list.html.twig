@@ -1,0 +1,381 @@
+<div class="row my-5">
+	<table class="table-sortable table striped table-hover cat_table table-responsive-stack" id="tableOne">
+		<thead>
+			<tr>
+				<th scope="col"><input type="checkbox" id="selectAll"/></th>
+				<th scope="col" class="sort">NOM</th>
+				<th scope="col" class="sort">ENTITÉ</th>
+				<th scope="col" class="sort">EMAIL</th>
+				<th scope="col" class="sort">TÉLÉPHONE</th>
+				<th scope="col" class="sort">RÔLE</th>
+				<th scope="col" class="sort">COLLÈGE</th>
+				<th scope="col"></th>
+			</tr>
+		</thead>
+		<tbody>
+			{% if roleAsso is defined and not null %}
+				{% for associate in pagination | reverse %}
+					{% if associate.naturalPerson is not null %}
+						<tr>
+							<td>
+								<input class="form-check-input" type="checkbox" id="myCheck" value="anp_{{ associate.naturalPerson.id }}">
+							</td>
+							<td>{{associate.naturalPerson.firstname |upper}}
+								{{associate.naturalPerson.lastname |capitalize}}</td>
+							<td> </td>
+							<td>{{associate.naturalPerson.email}}</td>
+							<td>{{associate.naturalPerson.telephone}}</td>
+							{% if associate.naturalPerson.executive is not null or associate.naturalPerson.associate is not null %}
+								<td>
+									{% if associate.naturalPerson.executive.mandateType is not null %}
+										{{associate.naturalPerson.executive.mandateType}}<br>
+									{% endif %}
+									{% if associate.naturalPerson.associate.subscriptionDate is not null and date(associate.naturalPerson.associate.withdrawalRequestDate) <= date(currentDate) %}
+										Ancien associé<br>
+									{% elseif associate.naturalPerson.associate.subscriptionDate is not null and associate.naturalPerson.associate.withdrawalRequestDate is not null and date(associate.naturalPerson.associate.withdrawalRequestDate) > date(currentDate) %}
+										Associé sortant<br>
+									{% elseif associate.naturalPerson.associate.subscriptionDate is not null and associate.naturalPerson.associate.withdrawalRequestDate is null %}
+										Associé actif<br>
+									{% endif %}
+								</td>
+							{% elseif associate.naturalPerson.otherParticipant.otherParticipantRole is not null %}
+								<td>
+									{{ associate.naturalPerson.otherParticipant.otherParticipantRole }}
+								</td>
+							{% else %}
+								<td> </td>
+							{% endif %}
+							<td>
+								{% if associate.naturalPerson.associate.subscriptionDate is not null %}
+									{{ associate.naturalPerson.associate.college.name }}
+								{% endif %}
+							</td>
+							<td class="d-flex flex-row align-items-center">
+								<a class="button button-light me-1" href="{{ path('members_showNatural', {'id': associate.naturalPerson.id}) }}">Voir</a>
+								{% if is_granted("ROLE_ADMIN") %}
+									<a class="button button-light me-1" href="{{ path('members_editNatural', {'id': associate.naturalPerson.id}) }}">Modifier</a>
+									{{ include('members/_delete_form_natural.html.twig') }}
+								{% endif %}
+							</td>
+						</tr>
+						{% endif %}
+					{% if associate.legalPerson is not null %}
+						<tr>
+							<td>
+								<input class="form-check-input" type="checkbox" value="ale_{{ associate.legalPerson.id }}" id="myCheck">
+							</td>
+							<td>
+								{% if associate.legalPerson.mainRepresentative.firstname is defined %}
+									{{associate.legalPerson.mainRepresentative.firstname |upper}}
+									{{associate.legalPerson.mainRepresentative.lastname |capitalize}}
+								{% endif %}
+							</td>
+							<td>{{associate.legalPerson.name}}</td>
+							<td>{{associate.legalPerson.email}}</td>
+							<td>{{associate.legalPerson.telephone}}</td>
+							{% if associate.legalPerson.executive.mandateType is not null or associate.legalPerson.associate.subscriptionDate is not null %}
+								<td>
+									{% if associate.legalPerson.executive.mandateType is not null %}
+										{{associate.legalPerson.executive.mandateType}}<br>
+									{% endif %}
+									{% if associate.legalPerson.associate.subscriptionDate is not null and date(associate.legalPerson.associate.withdrawalRequestDate) <= date(currentDate) %}
+										Ancien associé<br>
+									{% elseif associate.legalPerson.associate.subscriptionDate is not null and associate.legalPerson.associate.withdrawalRequestDate is not null and date(associate.legalPerson.associate.withdrawalRequestDate) > date(currentDate) %}
+										Associé sortant<br>
+									{% elseif associate.legalPerson.associate.subscriptionDate is not null and associate.legalPerson.associate.withdrawalRequestDate is null %}
+										Associé actif<br>
+									{% endif %}
+								</td>
+							{% elseif associate.legalPerson.otherParticipant.otherParticipantRole is not null %}
+								<td>
+									{{ associate.legalPerson.otherParticipant.otherParticipantRole }}
+								</td>
+							{% else %}
+								<td></td>
+							{% endif %}
+							<td>
+								{% if associate.legalPerson.associate.subscriptionDate is not null %}
+									{{ associate.legalPerson.associate.college.name }}
+								{% endif %}
+							</td>
+							<td class="d-flex flex-row align-items-center">
+								<a class="button button-light me-1" href="{{ path('members_showLegal', {'id': associate.legalPerson.id}) }}">Voir</a>
+								{% if is_granted("ROLE_ADMIN") %}
+									<a class="button button-light me-1" href="{{ path('members_editLegal', {'id': associate.legalPerson.id}) }}">Modifier</a>
+									{{ include('members/_delete_form_legal.html.twig') }}
+								{% endif %}
+							</td>
+						</tr>
+					{% endif %}
+				{% endfor %}
+			{% elseif roleExe is defined %}
+				{% for executive in pagination | reverse %}
+					{% if executive.naturalPerson is not null %}
+						<tr>
+							<td>
+								<input class="form-check-input" type="checkbox" id="myCheck" value="enp_{{ executive.naturalPerson.id }}">
+							</td>
+							<td>{{executive.naturalPerson.firstname |upper}}
+								{{executive.naturalPerson.lastname |capitalize}}</td>
+							<td> </td>
+							<td>{{executive.naturalPerson.email}}</td>
+							<td>{{executive.naturalPerson.telephone}}</td>
+							{% if executive.naturalPerson.executive.mandateType is not null or executive.naturalPerson.associate.subscriptionDate is not null %}
+								<td>
+									{% if executive.naturalPerson.executive.mandateType is not null %}
+										{{executive.naturalPerson.executive.mandateType}}<br>
+									{% endif %}
+									{% if executive.naturalPerson.associate.subscriptionDate is not null and date(executive.naturalPerson.associate.withdrawalRequestDate) <= date(currentDate) %}
+										Ancien associé<br>
+									{% elseif executive.naturalPerson.associate.subscriptionDate is not null and executive.naturalPerson.associate.withdrawalRequestDate is not null and date(executive.naturalPerson.associate.withdrawalRequestDate) > date(currentDate) %}
+										Associé sortant<br>
+									{% elseif executive.naturalPerson.associate.subscriptionDate is not null and executive.naturalPerson.associate.withdrawalRequestDate is null %}
+										Associé actif<br>
+									{% endif %}
+								</td>
+
+							{% elseif executive.naturalPerson.otherParticipant.otherParticipantRole is not null %}
+								<td>
+									{{ executive.naturalPerson.otherParticipant.otherParticipantRole }}
+								</td>
+							{% else %}
+								<td> </td>
+							{% endif %}
+							<td>
+								{% if executive.naturalPerson.associate.subscriptionDate is not null %}
+									{{ executive.naturalPerson.associate.college.name }}
+								{% endif %}
+							</td>
+							<td class="d-flex flex-row align-items-center">
+								<a class="button button-light me-1" href="{{ path('members_showNatural', {'id': executive.naturalPerson.id}) }}">Voir</a>
+								{% if is_granted("ROLE_ADMIN") %}
+									<a class="button button-light me-1" href="{{ path('members_editNatural', {'id': executive.naturalPerson.id}) }}">Modifier</a>
+									{{ include('members/_delete_form_natural.html.twig') }}''
+								{% endif %}
+							</td>
+						</tr>
+					{% endif %}
+					{% if executive.legalPerson %}
+						<tr>
+							<td>
+								<input class="form-check-input" type="checkbox" id="myCheck" value="ele_{{ executive.legalPerson.id }}">
+							</td>
+							<td>
+								{% if executive.legalPerson.mainRepresentative.firstname is defined %}
+									{{executive.legalPerson.mainRepresentative.firstname |upper}}
+									{{executive.legalPerson.mainRepresentative.lastname |capitalize}}
+								{% endif %}
+							</td>
+							<td>{{executive.legalPerson.name}}</td>
+							<td>{{executive.legalPerson.email}}</td>
+							<td>{{executive.legalPerson.telephone}}</td>
+							{% if executive.legalPerson.executive.mandateType is not null or executive.legalPerson.associate.subscriptionDate is not null %}
+								<td>
+									{% if executive.legalPerson.executive.mandateType is not null %}
+										{{executive.legalPerson.executive.mandateType}}<br>
+									{% endif %}
+									{% if executive.legalPerson.associate.subscriptionDate is not null and date(executive.legalPerson.associate.withdrawalRequestDate) <= date(currentDate) %}
+										Ancien associé<br>
+									{% elseif executive.legalPerson.associate.subscriptionDate is not null and executive.legalPerson.associate.withdrawalRequestDate is not null and date(executive.legalPerson.associate.withdrawalRequestDate) > date(currentDate) %}
+										Associé sortant<br>
+									{% elseif executive.legalPerson.associate.subscriptionDate is not null and executive.legalPerson.associate.withdrawalRequestDate is null %}
+										Associé actif<br>
+									{% endif %}
+								</td>
+							{% elseif executive.legalPerson.otherParticipant.otherParticipantRole is not null %}
+								<td>
+									{{ executive.legalPerson.otherParticipant.otherParticipantRole }}
+								</td>
+							{% else %}
+								<td> </td>
+							{% endif %}
+							<td>
+								{% if executive.legalPerson.associate.subscriptionDate is not null %}
+									{{ executive.legalPerson.associate.college.name }}
+								{% endif %}
+							</td>
+							<td class="d-flex flex-row align-items-center">
+								<a class="button button-light me-1" href="{{ path('members_showLegal', {'id': executive.legalPerson.id}) }}">Voir</a>
+								{% if is_granted("ROLE_ADMIN") %}
+									<a class="button button-light me-1" href="{{ path('members_editLegal', {'id': executive.legalPerson.id}) }}">Modifier</a>
+									{{ include('members/_delete_form_legal.html.twig') }}
+								{% endif %}
+							</td>
+						</tr>
+					{% endif %}
+				{% endfor %}
+			{% elseif roleOther is defined %}
+				{% for other in pagination | reverse %}
+					{% if other.naturalPerson is not null %}
+						<tr>
+							<td>
+								<input class="form-check-input" type="checkbox" id="myCheck" value="onp_{{ other.naturalPerson.id }}">
+							</td>
+							<td>{{other.naturalPerson.firstname |upper}}
+								{{other.naturalPerson.lastname |capitalize}}</td>
+							<td>Personne physique</td>
+							<td>{{other.naturalPerson.email}}</td>
+							<td>{{other.naturalPerson.telephone}}</td>
+							{% if other.naturalPerson.executive.mandateType is not null or other.naturalPerson.associate.subscriptionDate is not null %}
+								<td>
+									{% if other.naturalPerson.executive.mandateType is not null %}
+										{{other.naturalPerson.executive.mandateType}}<br>
+									{% endif %}
+									{% if other.naturalPerson.associate.subscriptionDate is not null and date(other.naturalPerson.associate.withdrawalRequestDate) <= date(currentDate) %}
+										Ancien associé<br>
+									{% elseif other.naturalPerson.associate.subscriptionDate is not null and other.naturalPerson.associate.withdrawalRequestDate is not null and date(other.naturalPerson.associate.withdrawalRequestDate) > date(currentDate) %}
+										Associé sortant<br>
+									{% elseif other.naturalPerson.associate.subscriptionDate is not null and other.naturalPerson.associate.withdrawalRequestDate is null %}
+										Associé actif<br>
+									{% endif %}
+								</td>
+							{% elseif other.naturalPerson.otherParticipant.otherParticipantRole is not null %}
+								<td>
+									{{ other.naturalPerson.otherParticipant.otherParticipantRole }}
+								</td>
+							{% else %}
+								<td> </td>
+							{% endif %}
+							<td>
+								{% if other.naturalPerson.associate.subscriptionDate is not null %}
+									{{ other.naturalPerson.associate.college.name }}
+								{% endif %}
+							</td>
+							<td class="d-flex flex-row align-items-center">
+								<a class="button button-light me-1" href="{{ path('members_showNatural', {'id': other.naturalPerson.id}) }}">Voir</a>
+								{% if is_granted("ROLE_ADMIN") %}
+									<a class="button button-light me-1" href="{{ path('members_editNatural', {'id': other.naturalPerson.id}) }}">Modifier</a>
+									{{ include('members/_delete_form_natural.html.twig') }}
+								{% endif %}
+							</td>
+						</tr>
+					{% endif %}
+					{% if other.legalPerson is not null %}
+						<tr>
+							<td>
+								<input class="form-check-input" type="checkbox" id="myCheck" value="ole_{{ other.legalPerson.id }}">
+							</td>
+							<td>
+								{% if other.legalPerson.mainRepresentative.firstname is defined %}
+									{{other.legalPerson.mainRepresentative.firstname |upper}}
+									{{other.legalPerson.mainRepresentative.lastname |capitalize}}
+								{% endif %}
+							</td>
+							<td>{{other.legalPerson.name}}</td>
+							<td>{{other.legalPerson.email}}</td>
+							<td>{{other.legalPerson.telephone}}</td>
+							{% if other.legalPerson.executive.mandateType is not null or other.legalPerson.associate.subscriptionDate is not null %}
+								<td>
+									{% if other.legalPerson.executive.mandateType is not null %}
+										{{other.legalPerson.executive.mandateType}}<br>
+									{% endif %}
+									{% if other.legalPerson.associate.subscriptionDate is not null and date(other.legalPerson.associate.withdrawalRequestDate) <= date(currentDate) %}
+										Ancien associé<br>
+									{% elseif other.legalPerson.associate.subscriptionDate is not null and other.legalPerson.associate.withdrawalRequestDate is not null and date(other.legalPerson.associate.withdrawalRequestDate) > date(currentDate) %}
+										Associé sortant<br>
+									{% elseif other.legalPerson.associate.subscriptionDate is not null and other.legalPerson.associate.withdrawalRequestDate is null %}
+										Associé actif<br>
+									{% endif %}
+								</td>
+							{% elseif other.legalPerson.otherParticipant.otherParticipantRole is not null %}
+								<td>
+									{{ other.legalPerson.otherParticipant.otherParticipantRole }}
+								</td>
+							{% else %}
+								<td> </td>
+							{% endif %}
+							<td>
+								{% if other.legalPerson.associate.subscriptionDate is not null %}
+									{{ other.legalPerson.associate.college.name }}
+								{% endif %}
+							</td>
+							<td class="d-flex flex-row align-items-center">
+								<a class="button button-light me-1" href="{{ path('members_showLegal', {'id': other.legalPerson.id}) }}">Voir</a>
+								{% if is_granted("ROLE_ADMIN") %}
+									<a class="button button-light me-1" href="{{ path('members_editLegal', {'id': other.legalPerson.id}) }}">Modifier</a>
+									{{ include('members/_delete_form_legal.html.twig') }}
+								{%  endif %}
+							</td>
+						</tr>
+					{% endif %}
+				{% endfor %}
+			{% else %}
+				{% for person in pagination  %}
+					<tr>
+					{% if person.firstname is defined %}
+						<td>
+							<input class="form-check-input" type="checkbox" id="myCheck" value="np_{{ person.id }}">
+						</td>
+					{% else %}
+					<td>
+							<input class="form-check-input" type="checkbox" id="myCheck" value="le_{{ person.id }}">
+						</td>
+						{% endif %}
+						<td>
+							{% if person.firstname is defined and person.name is not defined %}
+								{{person.getFullName()}}
+							{% elseif person.firstname is not defined and person.name is defined and person.mainRepresentative.firstname is defined %}
+								{{person.mainRepresentative.firstname}}
+								{{person.mainRepresentative.lastname}}
+							{% endif %}
+						</td>
+
+						<td>
+							{% if person.firstname is defined %}/
+
+							{% else %}
+								{{person.name}}
+							{% endif %}
+						</td>
+						<td>{{person.email}}</td>
+						<td>{{person.telephone}}</td>
+						{% if person.executive.mandateType is not null or person.associate.subscriptionDate is not null %}
+							<td>
+								{% if person.executive.mandateType is not null %}
+									{{person.executive.mandateType}}
+								{% endif %}
+								{% if person.associate.subscriptionDate is not null and date(person.associate.withdrawalRequestDate) <= date(currentDate) %}
+									Ancien associé
+								{% elseif person.associate.subscriptionDate is not null and person.associate.withdrawalRequestDate is not null and date(person.associate.withdrawalRequestDate) > date(currentDate) %}
+									Associé sortant
+								{% elseif person.associate.subscriptionDate is not null and person.associate.withdrawalRequestDate is null %}
+									Associé actif
+								{% endif %}
+							</td>
+
+						{% elseif person.otherParticipant.otherParticipantRole is not null %}
+							<td>
+								{{person.otherParticipant.otherParticipantRole}}
+							</td>
+						{% else %}
+							<td> </td>
+						{% endif %}
+						<td>
+							{% if person.associate.subscriptionDate is not null %}
+								{{ person.associate.college.name }}
+							{% endif %}
+						</td>
+						{% if person.gender is defined %}
+							<td class="d-flex flex-row align-items-center">
+								<a class="button button-light me-1" href="{{ path('members_showNatural', {'id': person.id}) }}">Voir</a>
+								{% if is_granted("ROLE_ADMIN") %}
+									<a class="button button-light me-1" href="{{ path('members_editNatural', {'id': person.id}) }}">Modifier</a>
+									{{ include('members/_delete_form_natural.html.twig') }}
+								{% endif %}
+							</td>
+						{% else %}
+							<td class="d-flex flex-row align-items-center">
+								<a class="button button-light me-1" href="{{ path('members_showLegal', {'id': person.id}) }}">Voir</a>
+								{% if is_granted("ROLE_ADMIN") %}
+									<a class="button button-light me-1" href="{{ path('members_editLegal', {'id': person.id}) }}">Modifier</a>
+									{{ include('members/_delete_form_legal.html.twig') }}
+								{% endif %}
+							</td>
+						{% endif %}
+					</tr>
+				{% endfor %}
+			{% endif %}
+		</tbody>
+	</table>
+</div>
+

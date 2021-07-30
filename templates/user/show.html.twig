@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}-
+	{{app.user.structure.name}}
+{% endblock %}
+
+{% block navbar %}
+	{% include 'admin/_navbarAdmin.html.twig' %}
+{% endblock %}
+
+{% block body %}
+	<div class="main_content pt-2">
+		<h1 class="h1structure text-left mt-3 me-5">{{app.user.structure.name}}</h1>
+		<h1 class="text-left mt-2">{{ user.lastname }}
+			{{ user.firstname }}</h1>
+		<div class="d-flex justify-content-start my-4">
+			{% if is_granted('ROLE_ADMIN') %}
+				<a class="button button-light d-flex align-items-end" href="{{ path('user_index') }}">Retour</a>
+			{% endif %}
+		</div>
+		<div class="d-flex justify-content-end my-4">
+			{% if is_granted("ROLE_ADMIN") %}
+				<a class="button button-light d-flex align-items-end me-3" href="{{ path('user_edit', {'id': user.id}) }}">Modifier</a>
+				{{ include('user/_delete_form.html.twig') }}
+			{% endif %}
+		</div>
+
+		<table class="table">
+			<tbody>
+				<tr>
+					<th>NOM</th>
+					<td>{{ user.lastname }}</td>
+				</tr>
+				<tr>
+					<th>PRÉNOM</th>
+					<td>{{ user.firstname }}</td>
+				</tr>
+				<tr>
+					<th>EMAIL</th>
+					<td>{{ user.email }}</td>
+				</tr>
+				<tr>
+					<th>ROLE</th>
+					<td>
+						{%  if "ROLE_ADMIN" in user.roles %}
+							Administrateur
+						{%  else %}
+							Utilisateur
+						{%  endif %}
+					</td>
+				</tr>
+				<tr>
+					<th>EMAIL VÉRIFIÉ</th>
+					<td>{{ user.isVerified ? 'Oui' : 'Non' }}</td>
+				</tr>
+			</tbody>
+		</table>
+		{% if app.user.id == user.id %}
+			<a class="button button-light mt-3" href="{{ path('app_forgot_password_request') }}">Réinitialiser mot de passe</a><br>
+		{% endif %}
+	</div>
+{% endblock %}

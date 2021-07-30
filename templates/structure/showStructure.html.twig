@@ -1,0 +1,153 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}-
+	{{app.user.structure.name}}
+{% endblock %}
+
+{% block navbar %}
+	{% include 'admin/_navbarAdmin.html.twig' %}
+{% endblock %}
+
+{% block body %}
+<div class="main_content pt-2">
+    <h1 class="h1structure text-left mt-3">{{structure.name}}</h1>
+    <h1>Structure</h1>
+    <div class="d-flex justify-content-start my-4">
+        <a class="button button-light d-flex align-items-end" href="{{ path('structure_index', {'id': app.user.structure.id}) }}">Retour</a>
+    </div>
+
+    <div class="container mt-5 border border-secondary col-11 position-relative">
+        <h5 class="position-absolute top-0 start-0 text-left s-card-title rounded p-2 ms-2 structure_card">Structure</h5>
+        <div class="container p-3 mt-3 col-11">
+            <p>FORME JURIDIQUE :
+                <strong class="text-dark">{{ structure.companyForm }}</strong>
+            </p>
+            <p>RAISON SOCIALE :
+                <strong class="text-dark">{{ structure.name }}</strong>
+            </p>
+            <p>SIREN :
+                <strong class="text-dark">{{ structure.siren|number_format(0, '.', ' ') }}</strong>
+            </p>
+            <p>VILLE RCS :
+                <strong class="text-dark">{{ structure.tradeAndCompanyRegister }}</strong>
+            </p>
+            <p>INFOS :
+                <strong class="text-dark">{{ structure.description }}</strong>
+            </p>
+            <p>PRINCIPAL REPRESENTANT :
+                <strong class="text-dark">{{ structure.mainRepresentative }}</strong>
+            </p>
+            <p>SECOND REPRESENTANT :
+                <strong class="text-dark">{{ structure.secondRepresentative }}</strong>
+            </p>
+            {% if is_granted("ROLE_ADMIN") %}
+                <div class="d-flex justify-content-end">
+                    <a class="button button-light " href="{{ path('structure_edit', {'id': structure.id}) }}">Détail</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="container mt-5 border border-secondary col-11 position-relative">
+        <h5 class="position-absolute top-0 start-0 text-left s-card-title rounded p-2 ms-2 structure_card">&#8239;Contact&#8239;</h5>
+        <div class="container p-3 mt-3 col-11">
+            <p>EMAIL :
+                <strong class="text-dark">{{ structure.email }}</strong>
+            </p>
+            <p>TÉLÉPHONE :
+                <strong class="text-dark">{{ structure.telephone }}</strong>
+            </p>
+            <p>TÉLÉPHONE 2 :
+                <strong class="text-dark">{{ structure.telephone2 }}</strong>
+            </p>
+            {% if is_granted("ROLE_ADMIN") %}
+                <div class="d-flex justify-content-end">
+                    <a class="button button-light " href="{{ path('contact_edit', {'id': structure.id}) }}">Détail</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="container mt-5 border border-secondary col-11 position-relative">
+        <h5 class="position-absolute top-0 start-0 text-left s-card-title rounded p-2 ms-2 structure_card">Adresses</h5>
+        <div class="container p-3 mt-3 col-11">
+            {% for address in structure.addresses %}
+                {% if address is same as structure.addresses[0] %}
+                <p class="mt-3">ADRESSE PRINCIPALE</p>
+                {% else %}
+                <p class="mt-5">ADRESSE {{ loop.index }}</p>
+                {% endif %}
+            <p>RUE : <strong class="text-dark me-5">{{ address.addressStreet }}</strong>
+            COMPLEMENT : <strong class="text-dark">{{ address.addressComplement }}</strong>
+            </p>
+            <p>CODE POSTAL : <strong class="text-dark me-5">{{ address.addressZip }}</strong>
+            VILLE : <strong class="text-dark me-5">{{ address.addressCity }}</strong>
+            PAYS :
+                <strong class="text-dark">{{ address.addressCountry }}</strong>
+            </p>
+            {% endfor %}
+            {% if is_granted("ROLE_ADMIN") %}
+                <div class="d-flex justify-content-end">
+                    <a class="button button-light " href="{{ path('address_index', {'id': app.user.structure.id}) }}">Détail</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+<div class="container mt-5 border border-secondary col-11 position-relative">
+	<h5 class="position-absolute top-0 start-0 text-left s-card-title rounded p-2 ms-2 structure_card">Associés</h5>
+	<div class="container p-3 mt-5 col-11">
+		<table class="table table-hover cat_table table-responsive-stack" id="tableOne">
+			<thead>
+				<tr>
+					<th scope="col">NOM</th>
+					<th scope="col">SOUSCRIPTION</th>
+					<th scope="col">PARTS</th>
+					<th scope="col">RETRAIT</th>
+					<th scope="col">REMBOURSEMENT</th>
+					<th scope="col">STATUT</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for associate in structure.associates %}
+                    {% if associate.subscriptionDate is not null%}
+					<tr>
+						<td>
+							<strong class="text-dark">{{ associate.legalPerson ? : associate.naturalPerson }}</strong>
+						</td>
+						<td>
+							<strong class="text-dark">{{ associate.subscriptionDate ? associate.subscriptionDate|date("d/m/Y") : '' }}</strong>
+						</td>
+						<td>
+							<strong class="text-dark">{{ associate.numberOfShare }}</strong>
+						</td>
+						<td>
+							<strong class="text-dark">{{ associate.withdrawalRequestDate ? associate.withdrawalRequestDate|date("d/m/Y") : '' }}</strong>
+						</td>
+						<td>
+							<strong class="text-dark">{{ associate.repaymentDate ? associate.repaymentDate|date("d/m/Y") : ''  }}</strong>
+						</td>
+						<td>
+                        {% if associate.withdrawalRequestDate is null %}
+							<strong class="text-dark">Associé actif</strong>
+						{% elseif associate.withdrawalRequestDate is not null %}
+                            {% if associate.withdrawalRequestDate|date("d/m/Y") > "now"|date("Y-m-d")  %}
+							<strong class="text-dark">Associé sortant</strong>
+						    {% elseif associate.withdrawalRequestDate|date("d/m/Y") <  "now"|date("Y-m-d") %}
+							<strong class="text-dark">Ancien associé</strong>
+                            {% endif %}
+						{% endif %}
+                        </td>
+					</tr>
+                    {% endif %}
+				</tbody>
+			{% endfor %}
+		</table>
+    </div>
+	{% if is_granted("ROLE_ADMIN") %}
+		<div class="d-flex justify-content-end my-3">
+			<a class="button button-light me-5" href="{{ path('associate_index', {'id': structure.id}) }}">Détail</a>
+		</div>
+	{% endif %}
+</div>
+{% endblock %}

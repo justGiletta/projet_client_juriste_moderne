@@ -1,0 +1,78 @@
+{{ form_start(form) }}
+<div class="container mt-5 border border-secondary col-11 position-relative">
+	<h5 class="position-absolute top-0 start-0 text-left s-card-title rounded p-2 ms-2 structure_card">INFORMATIONS GENERALES</h5>
+	<div class="container p-3 mt-3 col-11">
+		{{ form_row(form.gender, {'label': 'Genre *'}) }}
+		{{ form_row(form.firstname, {'label': 'Prénom *'}) }}
+		{{ form_row(form.lastname, {'label': 'Nom *'}) }}
+		{{ form_row(form.dateOfBirth, {'label': 'Date de naissance'}) }}
+		{{ form_row(form.placeOfBirth, {'label': 'Lieu de naissance'}) }}
+		{{ form_row(form.email, {'label': 'Email'}) }}
+		{{ form_row(form.telephone, {'label': 'Téléphone'}) }}
+		{{ form_row(form.telephone2, {'label': 'Téléphone (2)'}) }}
+	</div>
+</div>
+
+<div class="container mt-5 border border-secondary col-11 position-relative">
+	<h5 class="position-absolute top-0 start-0 text-left s-card-title rounded p-2 ms-2 structure_card">ADRESSE(S)</h5>
+	<div class="container p-3 mt-3 col-11">
+		<ul class="addresses" data-prototype="{{ form_widget(form.addresses.vars.prototype)|e('html_attr') }}">
+			{% for address in form.addresses %}
+				<li>{{ form_row(address.addressStreet) }}
+					{{ form_row(address.addressComplement) }}
+					{{ form_row(address.addressZip) }}
+					{{ form_row(address.addressCity) }}
+					{{ form_row(address.addressCountry) }}</li>
+			{% endfor %}
+		</ul>
+		<div class="d-flex justify-content-end">
+			<button type="button" class="add_addresses_link button button-light" data-collection-holder-class="addresses">Ajouter une adresse</button>
+		</div>
+	</div>
+</div>
+
+<div class="container mt-5 border border-secondary col-11 position-relative">
+	<h5 class="position-absolute top-0 start-0 text-left s-card-title rounded p-2 ms-2 structure_card">Rôle(s) au sein de la structure</h5>
+	<div class="container p-3 mt-3 col-11">
+		<div class="d-flex justify-content-center">
+			<h5 class="me-3">Associé</h5>
+			<input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onclick="toggleAsso()">
+		</div>
+		<ul class="associate px-0" id="associate" style="display:none">
+			<li>{{ form_row(form.associate.category, {'label': 'Catégorie *'}) }}</li>
+			<li>{{ form_row(form.associate.college, {'label': 'Collège *'}) }}</li>
+			<li>{{ form_row(form.associate.subscriptionDate, {'label': 'Date de souscription *'}) }}</li>
+			<li>{{ form_row(form.associate.caApprovalDate, {'label': "Date d'approbation par le CA"}) }}</li>
+			<li>{{ form_row(form.associate.agApprovalDate, {'label': "Date d'approbation par l'AG"}) }}</li>
+			<li>{{ form_row(form.associate.firstSubscribedCapitalPaymentsDate, {'label': 'Date de première libération'}) }}</li>
+			<li>{{ form_row(form.associate.numberOfShare, {'label': 'Nombre de parts'}) }}</li>
+			<li>{{ form_row(form.associate.subscribedCapitalAmountPaidUp, {'label': 'Capital libéré'}) }}</li>
+			<li>{{ form_row(form.associate.withdrawalRequestDate, {'label': 'Date de demande de retrait'}) }}</li>
+			<li>{{ form_row(form.associate.repaymentDate, {'label': 'Date de remboursement'}) }}</li>
+			<li>{{ form_row(form.associate.repaymentAmount, {'label': 'Montant du remboursement'}) }}</li>
+			<li>{{ form_row(form.associate.expertiseField, {'label': "Champ d'expertise"}) }}</li>
+			<li>{{ form_row(form.associate.referenceProjects, {'label': 'Référence aux projets'}) }}</li>
+		</ul>
+		<div class="d-flex justify-content-center">
+			<h5 class="me-3">Exécutif</h5>
+			<input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onclick="toggleExe()">
+		</div>
+		<ul class="executive px-0" id="executive" style="display:none">
+			<li>{{ form_row(form.executive.mandateStartdate, {'label': 'Date de début de mandat *'}) }}</li>
+			<li>{{ form_row(form.executive.mandateEnddate, {'label': 'Date de fin de mandat *'}) }}</li>
+			<li>{{ form_row(form.executive.mandateType, {'label': 'Type de mandat *'}) }}</li>
+			<li>{{ form_row(form.executive.mandateLimitations, {'label': 'Limitations de mandat'}) }}</li>
+		</ul>
+		<div class="d-flex justify-content-center">
+			<h5 class="me-3">Autre rôle</h5>
+			<input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onclick="toggleOther()">
+		</div>
+		<ul class="otherParticipant px-0" id="otherParticipant" style="display:none">
+			<li>{{ form_row(form.otherParticipant.otherParticipantRole, {'label': 'Dénomination du rôle *'}) }}</li>
+		</ul>
+	</div>
+</div>
+<div class="d-flex justify-content-end align-items-center my-4">
+	<button class="button button-light m-3" type="submit" data-action="modal-form#submitForm">{{ button_label|default('Sauvegarder') }}</button>
+</div>
+{{ form_end(form) }}

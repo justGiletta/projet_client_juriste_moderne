@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}-
+	{{structure.name}}
+{% endblock %}
+
+{% block navbar %}
+	{% include 'admin/_navbarAdmin.html.twig' %}
+{% endblock %}
+
+{% block body %}
+<div class="main_content pt-2">
+    <h1 class="h1structure text-left mt-3">{{structure.name}}</h1>
+	<h1 class="text-left mt-2 mb-5">Modifier</h1>
+
+    {{ include('structure/_form.html.twig', {'button_label': 'Éditer'}) }}
+
+    <a href="{{ path('structure_index', {'id': structure.id}) }}">back to list</a>
+
+</div>
+{% endblock %}

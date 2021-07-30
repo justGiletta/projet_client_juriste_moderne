@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}-
+	{{app.user.structure.name}}
+{% endblock %}
+
+{% block navbar %}
+    {% include 'admin/_navbarAdmin.html.twig' %}
+{% endblock %}
+
+{% block body %}
+<div class="main_content pt-2">
+	<h1 class="h1structure text-left mt-3 me-5">{{app.user.structure.name}}</h1>
+	<h1 class="text-left mt-2">{{ user.lastname }} {{ user.firstname }}</h1>
+    <div class="d-flex justify-content-start my-4">
+        <a class="button button-light d-flex align-items-end" href="{{ path('user_index') }}">Retour</a>
+    </div>
+    {{ form_start(form) }}
+        {{ form_row(form.lastname, {'label': 'NOM'}) }}
+        {{ form_row(form.firstname, {'label': 'PRÉNOM'}) }}
+        {{ form_row(form.email, {'label': 'EMAIL'}) }}
+        {% if is_granted('ROLE_ADMIN') %}
+            {{ form_row(form.roles, {'label': 'ROLE'}) }}
+        {% endif %}
+            {{ form_rest(form)}}
+        <button class="button button-light">{{ button_label|default('Sauvegarder') }}</button>
+    {{ form_end(form, {'render_rest': false}) }}
+</div>
+{% endblock %}

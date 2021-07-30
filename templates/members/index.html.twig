@@ -1,0 +1,251 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}-
+	{{ app.user.structure.name }}
+{% endblock %}
+
+{% block navbar %}
+	{% include 'admin/_navbarAdmin.html.twig' %}
+{% endblock %}
+
+{% block body %}
+	<div class="main_content pt-2">
+		<h1 class="h1structure text-left mt-3">{{app.user.structure.name}}</h1>
+		<h1 class="text-left mt-2">Les partenaires et intervenants</h1>
+		<div class="container mt-5" {{ stimulus_controller('reload-content', { url: path('members_index', {ajax: 1 } ) }) }} data-action="modal-form:success->reload-content#refreshContent">
+			<div class="row my-5">
+				<div class="col-12 col-md-12 col-lg-8">
+					{% include 'members/_searchForm.html.twig' with {form: form} only %}
+					<a class="button button-light mt-2" href="{{ path('members_index') }}">Réinitialiser</a>
+				</div>
+				{% if is_granted("ROLE_ADMIN") %}
+					<div class="col-12 col-md-12 col-lg-4 text-center mt-3 d-flex justify-content-end">
+						<div class="mt-2" {{ stimulus_controller('modal-form', { formUrl : path('members_newlegal') } ) }} data-action="hidden.bs.modal->modal-form#modalHidden">
+							<button class="button button-light py-1 me-3" data-action="modal-form#openModal" id="legal">
+								<span class="material-icons mx-3">add_business</span>
+							</button>
+							{{ include('_modal.html.twig', {modalTitle: 'Ajouter une personne morale'}) }}
+						</div>
+						<div class="mt-2" {{ stimulus_controller('modal-form', {formUrl: path('members_newnatural')} ) }} data-action="hidden.bs.modal->modal-form#modalHidden">
+							<button class="button button-light py-1" data-action="modal-form#openModal" id="natural">
+								<span class="material-icons mx-3">person_add</span>
+							</button>
+							{{ include('_modal.html.twig', {modalTitle: 'Ajouter une personne physique'}) }}
+						</div>
+					</div>
+				{% endif %}
+			</div>
+			<div data-reload-content-target="content">
+				{{ include('members/_list.html.twig') }}
+			</div>
+			<div class="d-flex justify-content-end mt-5">
+				<button type="button" id="mailToSelection" class="button button-light d-flex align-items-center me-2">Sélection<span class="material-icons send ms-2 me-0">email</span>
+				</button>
+				<a class="button button-light" href="{{ path('members_export') }}">Éditer<i class="bi bi-file-earmark-spreadsheet-fill ms-2"></i>
+				</a>
+			</div>
+			{{ knp_pagination_render(pagination) }}
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+
+	{{ parent() }}
+	<script>
+
+		// embbed address form in Natural and Legal person form
+
+jQuery(document).ready(function () { // Get the ul that holds the collection of tags
+var $addressesCollectionHolder = $('ul.addresses');
+// count the current form inputs we have (e.g. 2), use that as the new
+// index when inserting a new item (e.g. 2)
+$addressesCollectionHolder.data('index', $addressesCollectionHolder.find('input').length);
+
+$addressesCollectionHolder.find('li').each(function () {
+addTagFormDeleteLink($(this));
+});
+
+$('body').on('click', '.add_addresses_link', function (e) {
+var $collectionHolderClass = $(e.currentTarget).data('collectionHolderClass');
+// add a new tag form (see next code block)
+addFormToCollection($collectionHolderClass);
+});
+
+function addFormToCollection($collectionHolderClass) { // Get the ul that holds the collection of tags
+var $collectionHolder = $('.' + $collectionHolderClass);
+
+// Get the data-prototype explained earlier
+var prototype = $collectionHolder.data('prototype');
+
+// get the new index
+var index = $collectionHolder.data('index');
+
+var newForm = prototype;
+// You need this only if you didn't set 'label' => false in your tags field in TaskType
+// Replace '__name__label__' in the prototype's HTML to
+// instead be a number based on how many items we have
+// newForm = newForm.replace(/__name__label__/g, index);
+// Replace '__name__' in the prototype's HTML to
+// instead be a number based on how many items we have
+newForm = newForm.replace(/__name__/g, index);
+
+// increase the index with one for the next item
+$collectionHolder.data('index', index + 1);
+
+// Display the form in the page in an li, before the "Add a tag" link li
+var $newFormLi = $('<li></li>').append(newForm);
+// Add the new form at the end of the list
+$collectionHolder.append($newFormLi)
+addTagFormDeleteLink($newFormLi);
+}
+
+function addTagFormDeleteLink($tagFormLi) {
+var $removeFormButton = $('<button type="button" class="button button-light">Effacer cette adresse</button>');
+$tagFormLi.append($removeFormButton);
+
+$removeFormButton.on('click', function (e) { // remove the li for the tag form
+$tagFormLi.remove();
+});
+}
+});
+
+// Jquery/AJAX pour séléction d'email
+
+$(function () {
+$("#mailToSelection").click(function () {
+const employeeOrLegalEntityIds = [];
+$(".form-check-input").each(function () {
+const userId = $(this).val();
+if ($(this).is(":checked")) {
+employeeOrLegalEntityIds.push(userId)
+console.log(employeeOrLegalEntityIds)
+}
+});
+if (employeeOrLegalEntityIds.length === 0) {
+alert('Aucun utilisateur séléctionné')
+}
+$.ajax({
+method: "post",
+url: "{{ path("members_sendMail") }}",
+data: {
+employeeOrLegalEntityIds: employeeOrLegalEntityIds
+}
+}).done(function () {
+alert('La demande d\'envoie a bien été prise en compte')
+})
+})
+});
+
+// Script select all for table
+$('#selectAll').click(function (e) {
+var table = $(e.target).closest('table');
+$('td input:checkbox', table).prop('checked', this.checked);
+});
+
+// script Toggle in modal Add Natural and Legal person
+
+function toggleAsso() {
+var asso = document.getElementById('associate');
+if (asso.style.display == "block") { // if is menuBox displayed, hide it
+asso.style.display = "none";
+} else { // if is menuBox hidden, display it
+asso.style.display = "block";
+}
+}
+
+function toggleExe() {
+var exe = document.getElementById('executive');
+if (exe.style.display == "block") { // if is menuBox displayed, hide it
+exe.style.display = "none";
+} else { // if is menuBox hidden, display it
+exe.style.display = "block";
+}
+}
+
+function toggleOther() {
+var other = document.getElementById('otherParticipant');
+if (other.style.display == "block") { // if is menuBox displayed, hide it
+other.style.display = "none";
+} else { // if is menuBox hidden, display it
+other.style.display = "block";
+}
+
+}
+
+function toggleAsso2() {
+var asso = document.getElementById('associate2');
+if (asso.style.display == "block") { // if is menuBox displayed, hide it
+asso.style.display = "none";
+} else { // if is menuBox hidden, display it
+asso.style.display = "block";
+}
+}
+
+function toggleExe2() {
+var exe = document.getElementById('executive2');
+if (exe.style.display == "block") { // if is menuBox displayed, hide it
+exe.style.display = "none";
+} else { // if is menuBox hidden, display it
+exe.style.display = "block";
+}
+}
+
+function toggleOther2() {
+var other = document.getElementById('otherParticipant2');
+if (other.style.display == "block") { // if is menuBox displayed, hide it
+other.style.display = "none";
+} else { // if is menuBox hidden, display it
+other.style.display = "block";
+}
+}
+
+// Script JS sort tables
+
+function sortTableByColumn(table, column, asc = true) {
+const dirModifier = asc ? 1 : -1;
+const tBody = table.tBodies[0];
+const rows = Array.from(tBody.querySelectorAll("tr"));
+
+// Sort each row
+const sortedRows = rows.sort((a, b) => {
+const aColText = a.querySelector (`td:nth-child(${
+column + 1
+})`).textContent.trim();
+const bColText = b.querySelector (`td:nth-child(${
+column + 1
+})`).textContent.trim();
+
+return aColText > bColText ? (1 * dirModifier) : (-1 * dirModifier);
+});
+
+// Remove all existing TRs from the table
+while (tBody.firstChild) {
+tBody.removeChild(tBody.firstChild);
+}
+
+// Re-add the newly sorted rows
+tBody.append(... sortedRows);
+
+// Remember how the column is currently sorted
+table.querySelectorAll('th').forEach(th => th.classList.remove("th-sort-asc", "th-sort-desc"));
+table.querySelector (`th:nth-child(${
+column + 1
+})`).classList.toggle("th-sort-asc", asc);
+table.querySelector (`th:nth-child(${
+column + 1
+})`).classList.toggle("th-sort-desc", ! asc);
+}
+
+document.querySelectorAll(".table-sortable th.sort").forEach(headerCell => {
+headerCell.addEventListener("click", () => {
+const tableElement = headerCell.parentElement.parentElement.parentElement;
+const headerIndex = Array.prototype.indexOf.call(headerCell.parentElement.children, headerCell);
+const currentIsAscending = headerCell.classList.contains("th-sort-asc");
+
+sortTableByColumn(tableElement, headerIndex, ! currentIsAscending);
+});
+});
+
+	</script>
+{% endblock %}

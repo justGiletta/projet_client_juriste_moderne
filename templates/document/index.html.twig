@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}-
+	{{app.user.structure.name}}
+{% endblock %}
+
+{% block navbar %}
+    {% include 'admin/_navbarAdmin.html.twig' %}
+{% endblock %}
+
+{% block body %}
+<div class="main_content pt-2">
+	<h1 class="h1structure text-left me-5 mt-3">{{app.user.structure.name}}</h1>
+	<h1 class="text-left mt-2">Documents</h1>
+    <div class="my-5" {{ stimulus_controller('reload-content', { url: path('document_index', {ajax: 1 } ) }) }} data-action="modal-form:success->reload-content#refreshContent">
+		<div class="mt-2" {{ stimulus_controller('modal-form', { formUrl : path('document_new') } ) }} data-action="hidden.bs.modal->modal-form#modalHidden">
+		<button class="button button-light d-flex align-items-end" data-action="modal-form#openModal"><span class="material-icons">upload_file</span>Document</button>
+			{{ include('_modal.html.twig', {modalTitle: 'Ajouter un fichier'}) }}
+		</div>
+		<div class="my-5" data-reload-content-target="content">
+			{{ include('document/_list.html.twig') }}
+		</div>
+    </div>
+</div>
+
+{% endblock %}

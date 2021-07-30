@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}-
+	{{app.user.structure.name}}
+{% endblock %}
+
+{% block navbar %}
+	{% include 'admin/_navbarAdmin.html.twig' %}
+{% endblock %}
+
+
+{% block body %}
+<div class="main_content pt-2">
+	<h1 class="h1structure text-left me-5 mt-3">{{app.user.structure.name}}</h1>
+	<h1 class="text-left mt-2">Associés</h1>
+    <div class="d-flex justify-content-start">
+		<a class="button button-light my-3" href="{{ path('structure_show', {'id': app.user.structure.id}) }}">Retour</a>
+	</div>
+    {% if is_granted("ROLE_ADMIN") %}
+    <div class="d-flex justify-content-end">
+		<a class="button button-light d-flex align-items-end" href="{{ path('members_index') }}">Ajouter</a>
+	</div>
+    {% endif %}
+    <div class="container p-3 mt-5">
+		<table class="table table-hover cat_table table-responsive-stack" id="tableOne">
+			<thead>
+				<tr>
+					<th scope="col">NAME</th>
+					<th scope="col">SOUSCRIPTION</th>
+					<th scope="col">PARTS</th>
+					<th scope="col">CA APPROBATION</th>
+					<th scope="col">AG APPROBATION</th>
+					<th scope="col">DEMANDE RETRAIT</th>
+					<th scope="col">REMBOURSEMENT</th>
+					<th scope="col">MONTANT</th>
+					<th scope="col"></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for associate in associates %}
+                    {% if associate.subscriptionDate is not null%}
+					<tr>
+						<td>
+							<strong class="text-dark">{{ associate.legalPerson ? : associate.naturalPerson }}</strong>
+						</td>
+						<td>
+							<strong class="text-dark">{{ associate.subscriptionDate ? associate.subscriptionDate|date("d/m/Y") : '' }}</strong>
+						</td>
+						<td>
+							<strong class="text-dark">{{ associate.numberOfShare }}</strong>
+						</td>
+                        <td>
+							<strong class="text-dark">{{ associate.caApprovalDate ? associate.caApprovalDate|date("d/m/Y") : '' }}</strong>
+						</td>
+						<td>
+							<strong class="text-dark">{{ associate.agApprovalDate ? associate.agApprovalDate|date("d/m/Y") : '' }}</strong>
+						</td>
+						<td>
+							<strong class="text-dark">{{ associate.withdrawalRequestDate ? associate.withdrawalRequestDate|date("d/m/Y") : '' }}</strong>
+						</td>
+						<td>
+							<strong class="text-dark">{{ associate.repaymentDate ? associate.repaymentDate|date("d/m/Y") : '' }}</strong>
+						</td>
+						<td>
+							{% if associate.repaymentAmount is not null %}
+								<strong class="text-dark">{{ associate.repaymentAmount|number_format(0, '.', ' ') }}&#8239;€</strong>
+							{% else %}
+								<strong class="text-dark"></strong>
+							{% endif %}
+						</td>
+						<td>
+							{% if is_granted("ROLE_ADMIN") %}
+                                <div class="d-flex justify-content-end my-3">
+                                    <a class="button button-light d-flex align-items-end" href="{{ path('members_index') }}">Modifier</a>
+                                </div>
+                            {% endif %}
+						</td>
+					</tr>
+				</tbody>
+                {% endif %}
+			{% endfor %}
+		</table>
+    </>
+</div>
+{% endblock %}

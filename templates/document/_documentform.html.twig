@@ -1,0 +1,6 @@
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <div class="d-flex justify-content-end align-items-center my-4">
+        <button class="button button-light m-3" type="submit">{{ button_label|default('Sauvegarder') }}</button>
+    </div>
+{{ form_end(form) }}

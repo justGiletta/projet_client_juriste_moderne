@@ -1,0 +1,145 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}-
+	{{app.user.structure.name}}
+{% endblock %}
+
+{% block navbar %}
+	{% include 'admin/_navbarAdmin.html.twig' %}
+{% endblock %}
+
+{% block body %}
+	<div class="main_content pt-2">
+		<h1 class="h1structure text-left mt-3">{{app.user.structure.name}}</h1>
+		<h1>{{ naturalPerson.firstname }}
+			{{ naturalPerson.lastname }}</h1>
+		<div class="d-flex justify-content-start my-4">
+			<a class="button button-light me-1 my-4" href="{{ path('members_index') }}">Retour</a>
+		</div>
+		<div class="d-flex justify-content-end my-4">
+			{% if is_granted("ROLE_ADMIN") %}
+				<a class="button button-light me-5" href="{{ path('members_editNatural', {'id': naturalPerson.id}) }}">Editer</a>
+			{% endif %}
+		</div>
+
+		<div class="container mt-5 border border-secondary col-11 position-relative">
+			<h5 class="position-absolute top-0 start-0 text-left s-card-title rounded p-2 ms-2 structure_card">INFORMATIONS GENERALES</h5>
+			<div class="container p-3 mt-3 col-11">
+				<p>GENRE :
+					<strong class="text-dark">{{ naturalPerson.gender }}</strong>
+				</p>
+				<p>PRÉNOM :
+					<strong class="text-dark">{{ naturalPerson.firstname }}</strong>
+				</p>
+				<p>NOM :
+					<strong class="text-dark">{{ naturalPerson.lastname }}</strong>
+				</p>
+				{% if naturalPerson.mainLegalPerson is not null %}
+					<p>SOCIÉTÉ :
+						<strong class="text-dark">{{ naturalPerson.mainLegalPerson }}</strong>
+					</p>
+				{% endif %}
+				{% if naturalPerson.secondLegalPerson is not null %}
+					<p>SOCIÉTÉ :
+						<strong class="text-dark">{{ naturalPerson.secondLegalPerson }}</strong>
+					</p>
+				{% endif %}
+				<p>DATE DE NAISSANCE :
+					<strong class="text-dark">{{ naturalPerson.dateOfBirth ? naturalPerson.dateOfBirth|date("d/m/Y") : '' }}</strong>
+				</p>
+				<p>LIEU DE NAISSANCE :
+					<strong class="text-dark">{{ naturalPerson.placeOfBirth }}</strong>
+				</p>
+				<p>EMAIL :
+					<strong class="text-dark">{{ naturalPerson.email }}</strong>
+				</p>
+				<p>TÉLÉPHONE :
+					<strong class="text-dark">{{ naturalPerson.telephone }}</strong>
+				</p>
+				<p>TÉLÉPHONE (2) :
+					<strong class="text-dark">{{ naturalPerson.telephone2 }}</strong>
+				</p>
+				<p>ADRESSE(S) :
+					<strong class="text-dark">
+						{% for address in naturalPerson.addresses %}
+							{{ address.addressStreet }}
+							{{ address.addressComplement }}
+							{{ address.addressZip}}
+							{{ address.addressCity }}
+							{{ address.addressCountry }}
+						{% endfor %}
+					</strong>
+				</p>
+			</div>
+		</div>
+		<div class="container mt-5 border border-secondary col-11 position-relative">
+			<h5 class="position-absolute top-0 start-0 text-left s-card-title rounded p-2 ms-2 structure_card">RÔLE(S)</h5>
+			<div class="container p-3 mt-3 col-11">
+	{% if naturalPerson.associate.subscriptionDate is not null %}
+				<h5 class="mt-5 mb-3">ASSOCIÉ</h5>
+					<p>DATE DE SOUSCRIPTION :
+						<strong class="text-dark">{{ naturalPerson.associate.subscriptionDate|date("d/m/Y") }}</strong>
+					</p>
+
+					<p>DATE D'APPROBATION PAR LE CA :
+						<strong class="text-dark">{{ naturalPerson.associate.caApprovalDate|date("d/m/Y") }}</strong>
+					</p>
+					<p>DATE D'APPROBATION PAR l'AG :
+						<strong class="text-dark">{{ naturalPerson.associate.agApprovalDate|date("d/m/Y") }}</strong>
+					</p>
+					<p>DATE DE PREMIÈRE LIBÉRATION :
+						<strong class="text-dark">{{ naturalPerson.associate.firstSubscribedCapitalPaymentsDate|date("d/m/Y") }}</strong>
+					</p>
+					<p>NOMBRE DE PARTS :
+						<strong class="text-dark">{{ naturalPerson.associate.numberOfShare }}</strong>
+					</p>
+					<p>CAPITAL LIBÉRÉ :
+						<strong class="text-dark">{{ naturalPerson.associate.subscribedCapitalAmountPaidUp }}</strong>
+					</p>
+					<p>DATE DE DEMANDE DE RETRAIT :
+						<strong class="text-dark">{{ naturalPerson.associate.withdrawalRequestDate|date("d/m/Y") }}</strong>
+					</p>
+					<p>DATE DE REMBOURSEMENT :
+						<strong class="text-dark">{{ naturalPerson.associate.repaymentDate|date("d/m/Y") }}</strong>
+					</p>
+					<p>MONTANT DU REMBOURSEMENT :
+						<strong class="text-dark">{{ naturalPerson.associate.repaymentAmount }}</strong>
+					</p>
+					<p>CHAMP D'EXPERTISE :
+						<strong class="text-dark">{{ naturalPerson.associate.expertiseField }}</strong>
+					</p>
+					<p>RÉFÉRENCE AUX PROJETS :
+						<strong class="text-dark">{{ naturalPerson.associate.referenceProjects }}</strong>
+					</p>
+					<p>CATÉGORIE :
+						<strong class="text-dark">{{ naturalPerson.associate.category.name }}</strong>
+					</p>
+					<p>COLLÈGE :
+						<strong class="text-dark">{{ naturalPerson.associate.college.name }}</strong>
+					</p>
+		{% endif %}
+		{% if naturalPerson.executive.mandateType is not null %}
+				<h5 class="mt-5 mb-3">DIRIGEANT</h5>
+					<p>DATE DE DÉBUT DE MANDAT :
+						<strong class="text-dark">{{ naturalPerson.executive.mandateStartdate|date("d/m/Y") }}</strong>
+					</p>
+					<p>DATE DE FIN DE FIN DE MANDAT :
+						<strong class="text-dark">{{ naturalPerson.executive.mandateEnddate|date("d/m/Y")  }}</strong>
+					</p>
+					<p>TYPE DE MANDAT :
+						<strong class="text-dark">{{ naturalPerson.executive.mandateType  }}</strong>
+					</p>
+					<p>LIMITATIONS DE MANDAT :
+						<strong class="text-dark">{{ naturalPerson.executive.mandateLimitations }}</strong>
+					</p>
+		{% endif %}
+		{% if naturalPerson.otherParticipant.otherParticipantRole is not null %}
+				<h5 class="mt-5 mb-3">AUTRE</h5>
+					<p>RÔLE
+						<strong class="text-dark">{{ naturalPerson.otherParticipant.otherParticipantRole }}</strong>
+					</p>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+{% endblock %}

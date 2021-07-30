@@ -1,0 +1,143 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}-
+	{{app.user.structure.name}}
+{% endblock %}
+
+{% block navbar %}
+	{% include 'admin/_navbarAdmin.html.twig' %}
+{% endblock %}
+
+{% block body %}
+<div class="main_content pt-2">
+	<h1 class="h1structure text-left mt-3">{{app.user.structure.name}}</h1>
+	<h1>{{ legalPerson.name }}</h1>
+	<div class="d-flex justify-content-start my-4">
+        <a class="button button-light me-1 my-4" href="{{ path('members_index') }}">Retour</a>
+    </div>
+	<div class="d-flex justify-content-end my-4">
+		{% if is_granted("ROLE_ADMIN") %}
+		<a class="button button-light me-5" href="{{ path('members_editLegal', {'id': legalPerson.id}) }}">Editer</a>
+		{% endif %}
+    </div>
+	<div class="container mt-5 border border-secondary col-11 position-relative">
+		<h5 class="position-absolute top-0 start-0 text-left s-card-title rounded p-2 ms-2 structure_card">INFORMATIONS GENERALES</h5>
+			<div class="container p-3 mt-3 col-11">
+				<p>RAISON SOCIALE :
+					<strong class="text-dark">{{ legalPerson.name }}</strong>
+				</p>
+				<p>SIREN :
+					<strong class="text-dark">{{ legalPerson.siren|number_format(0, '.', ' ') }}</strong>
+				</p>
+				<p>VILLE RCS :
+					<strong class="text-dark">{{ legalPerson.tradeAndCompagnyRegister }}</strong>
+				</p>
+				<p>FORME JURIDIQUE :
+					<strong class="text-dark">{{ legalPerson.companyForm }}</strong>
+				</p>
+				<p>CAPITAL :
+					<strong class="text-dark">{{ legalPerson.registerCapital }}</strong>
+				</p>
+				<p>EMAIL :
+					<strong class="text-dark">{{ legalPerson.email }}</strong>
+				</p>
+				<p>TÉLÉPHONE :
+					<strong class="text-dark">{{ legalPerson.telephone }}</strong>
+				</p>
+				<p>TÉLÉPHONE 2 :
+					<strong class="text-dark">{{ legalPerson.telephone2 }}</strong>
+				</p>
+				{% if legalPerson.mainRepresentative is not null %}
+					<p>REPRESENTANT :
+						<strong class="text-dark">{{ legalPerson.mainRepresentative.firstname }}</strong>
+						<strong class="text-dark">{{ legalPerson.mainRepresentative.lastname }}</strong>
+					</p>
+				{% endif %}
+				{% if legalPerson.secondRepresentative is not null %}
+					<p>SECOND REPRESENTANT :
+						<strong class="text-dark">{{ legalPerson.secondRepresentative.firstname }}</strong>
+						<strong class="text-dark">{{ legalPerson.secondRepresentative.lastname }}</strong>
+					</p>
+				{% endif %}
+				<p>ADRESSE(S) :
+					{% for address in legalPerson.addresses %}
+						<strong class="text-dark">{{ address.addressStreet }}</strong>
+						<strong class="text-dark">{{ address.addressComplement }}</strong>
+						<strong class="text-dark">{{ address.addressZip}}</strong>
+						<strong class="text-dark">{{ address.addressCity }}</strong>
+						<strong class="text-dark">{{ address.addressCountry }}</strong>
+					{% endfor %}
+				</p>
+			</div>
+		</div>
+	<div class="container mt-5 border border-secondary col-11 position-relative">
+		<h5 class="position-absolute top-0 start-0 text-left s-card-title rounded p-2 ms-2 structure_card">RÔLE(S)</h5>
+			<div class="container p-3 mt-3 col-11">
+		{% if legalPerson.associate.subscriptionDate is not null %}
+				<h5 class="mt-5 mb-3">ASSOCIÉ</h5>
+					<p>Date de souscription :
+						<strong class="text-dark">{{ legalPerson.associate.subscriptionDate|date("d/m/Y") }}</strong>
+					</p>
+
+					<p>Date d'approbation par le CA :
+						<strong class="text-dark">{{ legalPerson.associate.caApprovalDate|date("d/m/Y") }}</strong>
+					</p>
+					<p>Date d'approbation par l'AG :
+						<strong class="text-dark">{{ legalPerson.associate.agApprovalDate|date("d/m/Y") }}</strong>
+					</p>
+					<p>Date de première libération :
+						<strong class="text-dark">{{ legalPerson.associate.firstSubscribedCapitalPaymentsDate|date("d/m/Y") }}</strong>
+					</p>
+					<p>Nombre de parts :
+						<strong class="text-dark">{{ legalPerson.associate.numberOfShare }}</strong>
+					</p>
+					<p>Capital libéré :
+						<strong class="text-dark">{{ legalPerson.associate.subscribedCapitalAmountPaidUp }}</strong>
+					</p>
+					<p>Date de demande de retrait :
+						<strong class="text-dark">{{ legalPerson.associate.withdrawalRequestDate|date("d/m/Y") }}</strong>
+					</p>
+					<p>Date de remboursement :
+						<strong class="text-dark">{{ legalPerson.associate.repaymentDate|date("d/m/Y") }}</strong>
+					</p>
+					<p>Montant du remboursement :
+						<strong class="text-dark">{{ legalPerson.associate.repaymentAmount }}</strong>
+					</p>
+					<p>Champ d'expertise :
+						<strong class="text-dark">{{ legalPerson.associate.expertiseField }}</strong>
+					</p>
+					<p>Référence aux projets :
+						<strong class="text-dark">{{ legalPerson.associate.referenceProjects }}</strong>
+					</p>
+					<p>Catégorie :
+						<strong class="text-dark">{{ legalPerson.associate.category.name }}</strong>
+					</p>
+					<p>Collège :
+						<strong class="text-dark">{{ legalPerson.associate.college.name }}</strong>
+					</p>
+		{% endif %}
+		{% if legalPerson.executive.mandateType is not null %}
+				<h5 class="mt-5 mb-3">DIRIGEANT</h5>
+					<p>DATE DE DÉBUT DE MANDAT
+						<strong class="text-dark">{{ legalPerson.executive.mandateStartdate|date("d/m/Y") }}</strong>
+					</p>
+					<p>DATE DE FIN DE FIN DE MANDAT
+						<strong class="text-dark">{{ legalPerson.executive.mandateEnddate|date("d/m/Y")  }}</strong>
+					</p>
+					<p>TYPE DE MANDAT
+						<strong class="text-dark">{{ legalPerson.executive.mandateType  }}</strong>
+					</p>
+					<p>LIMITATIONS DE MANDAT
+						<strong class="text-dark">{{ legalPerson.executive.mandateLimitations }}</strong>
+					</p>
+		{% endif %}
+		{% if legalPerson.otherParticipant.otherParticipantRole is not null %}
+				<h5 class="mt-5 mb-3">AUTRE</h5>
+					<p>RÔLE
+						<strong class="text-dark">{{ legalPerson.otherParticipant.otherParticipantRole }}</strong>
+					</p>
+		{% endif %}
+			</div>
+		</div>
+	</div>
+{% endblock %}

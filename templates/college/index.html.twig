@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}-
+	{{app.user.structure.name}}
+{% endblock %}
+
+{% block navbar %}
+	{% include 'admin/_navbarAdmin.html.twig' %}
+{% endblock %}
+
+{% block body %}
+<div class="main_content pt-2">
+	<h1 class="h1structure text-left me-5 mt-3">{{app.user.structure.name}}</h1>
+	<h1 class="text-left mt-2">Collèges</h1>
+    <div class="d-flex justify-content-start my-4">
+        <a class="button button-light d-flex align-items-end" href="{{ path('structure_index', {'id': app.user.structure.id}) }}">Retour</a>
+    </div>
+    {% if is_granted("ROLE_ADMIN") %}
+    <div class="d-flex justify-content-end my-4">
+        <a class="button button-light d-flex align-items-end" href="{{ path('college_new', {'id': app.user.structure.id}) }}">Ajouter</a>
+    </div>
+    {% endif %}
+
+    <table class="table table-striped table-hover cat_table table-responsive-stack" id="tableOne">
+        <thead>
+            <tr>
+                <th>COLLÈGES</th>
+                <th>TYPE D'ASSOCIÉ</th>
+                <th>VOTE</th>
+                <th>RÉPARTITION</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for college in colleges %}
+            <tr>
+                <td>{{ college.name }}</td>
+                <td>{{ college.prefixClassification }}</td>
+                <td>{{ college.description }}</td>
+                <td>{{ college.nbVotingRight }}&#8239;%</td>
+                <td>
+                    {% if is_granted("ROLE_ADMIN") %}
+                    <a class="button button-light" href="{{ path('college_edit', {'idStructure': app.user.structure.id, 'slug' : college.slug }) }}">Modifer</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">Aucune catégorie trouvée</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

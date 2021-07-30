@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}-
+	{{app.user.structure.name}}
+{% endblock %}
+
+{% block navbar %}
+	{% include 'admin/_navbarAdmin.html.twig' %}
+{% endblock %}
+
+{% block body %}
+	<div class="main_content pt-2">
+		<h1 class="h1structure text-left mt-3">{{app.user.structure.name}}</h1>
+		<h1 class="text-left mt-2">Réunions (Work In Progress)</h1>
+	</div>
+{% endblock %}

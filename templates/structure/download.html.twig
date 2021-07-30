@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LJM
+    {% block title %}-
+        {{structure.name}}
+    {% endblock %}
+    </title>
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <style type="text/css">
+
+html{
+    margin:40px 50px !important;
+    }
+
+body {
+    box-sizing: border-box;
+    color: #697988;
+    background-color: #64b3b433;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.667;
+    padding:40px !important;
+}
+.main {
+    min-height:80vh;
+}
+h1, h2, h3, h4, h5 {
+    font-family: 'Hammersmith One', sans-serif;
+    color: #64B3B4;
+    line-height: 1.25;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+h1, .h1 {
+    font-size: 30px;
+    line-height: 1.2;
+}
+a {
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
+/* Page */
+.title_header .h1structure {
+    color: var(--bannergray);
+}
+.title_header img {
+    width: 100px;
+    height: 100px;
+    margin: 0;
+}
+.main_content .s-card-title {
+    background-color: #64B3B4;
+    color: #ffffff !important;
+    font-size: 20px;
+}
+.structure_card {
+    height: 20px;
+    width: 500px;
+    padding: 20px;
+    margin-top: 25px;
+}
+.capital_card {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 50px;
+}
+.capital_charts {
+    margin-left: 30px;
+    margin-top: 50px;
+}
+.capital_text {
+    margin-left: 30px;
+    margin-top: 100px;
+}
+td {
+  text-align: center;
+}
+.page_break {
+    page-break-before: always;
+    }
+
+    </style>
+</head>
+<body>
+{% block body %}
+<div class="main_content">
+	<div class="title_header">
+			<h1 class="h1structure">{{app.user.structure.name}}</h1>
+			<h1 class="">Synthèse</h1>
+	</div>
+	<div>
+		<h5 class="s-card-title structure_card">Structure</h5>
+		<div class="">
+			<p>RAISON SOCIALE :
+				<strong class="text-dark">{{ structure.name }}</strong>
+			</p>
+			<p>SIREN :
+				<strong class="text-dark">{{ structure.siren }}</strong>
+			</p>
+			<p>VILLE RCS :
+				<strong class="text-dark">{{ structure.tradeAndCompanyRegister }}</strong>
+			</p>
+			<p>FORME JURIDIQUE :
+				<strong class="text-dark">{{ structure.companyForm }}</strong>
+			</p>
+			<p>EMAIL :
+				<strong class="text-dark">{{ structure.email }}</strong>
+			</p>
+			<p>TÉLÉPHONE :
+				<strong class="text-dark">{{ structure.telephone }}</strong>
+			</p>
+			<p>TÉLÉPHONE 2 :
+				<strong class="text-dark">{{ structure.telephone2 }}</strong>
+			</p>
+			<p>INFOS :
+				<strong class="text-dark">{{ structure.description }}</strong>
+			</p>
+		</div>
+        <div>
+            <h5 class="s-card-title structure_card">Etat du capital</h5>
+            <div class="capital_card">
+                <div class="capital_charts">
+                    <div id="div_chart" class="embed-responsive-item"></div>
+                </div>
+                <div class="capital_text">
+                    <p>CAPITAL LIBÉRÉ :
+                        <strong>{{ paidUpCapitalTotal|number_format(0, '.', ' ') }}&#8239;€</strong>
+                    </p>
+                    <p>CAPITAL À LIBÉRER :
+                        <strong>{{ tobePaidUpCapitalTotal|number_format(0, '.', ' ') }}&#8239;€</strong>
+                    </p>
+                    <p>VALEUR UNITAIRE DU TITRE :
+                        <strong>{{ structure.shareUnitValue }}&#8239;€</strong>
+                    </p>
+                    <p>TOTAL DES TITRES SOUSCRITS :
+                        <strong>{{ totalNumberofShare }}</strong>
+                    </p>
+                    <p>TOTAL CAPITAL SOUSCRIT :
+                        <strong>{{ suscribedCapitalTotal |number_format(0, '.', ' ') }}&#8239;€</strong>
+                    </p>
+                </div>
+            </div>
+		</div>
+		<div class="page_break">
+			<h5 class="s-card-title structure_card">Catégories d'associés</h5>
+			<table class="table table-hover cat_table">
+				<thead>
+					<tr>
+						<th scope="col">CATÉGORIE</th>
+						<th scope="col">TYPE D'ASSOCIÉS</th>
+						<th scope="col">TICKET D'ENTRÉE</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for category in structure.categories %}
+						<tr>
+							<th scope="row">{{ category.name }}
+								{{ category.prefixClassification }}</th>
+							<td>{{ category.description }}</td>
+							<td>{{ (category.nbMinAction * category.shareValue) |number_format(0, '.', ' ') }}&#8239;€</td>
+						</tr>
+					</tbody>
+				{% endfor %}
+			</table>
+		</div>
+		<div class="">
+			<h5 class="s-card-title structure_card">Collèges</h5>
+			<table>
+				<thead>
+					<tr>
+						<th>COLLÈGE</th>
+						<th>TYPE D'ASSOCIÉ</th>
+						<th>VOTE</th>
+						<th>RÉPARTITION</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for college in structure.colleges %}
+						<td>{{ college.name }}</td>
+						<td>{{ college.prefixClassification }}</td>
+						<td>{{ college.description }}</td>
+						<td>{{ college.nbVotingRight }}&#8239;%</td>
+						<td></td>
+					</tbody>
+				{% endfor %}
+			</table>
+		</div>
+		<div class="page_break">
+			<h5 class="s-card-title structure_card">Gouvernance</h5>
+			<p>La société est dirgée par &#8239;:</p>
+			{% for executive in structure.executives %}
+				{% if executive.mandateStartDate is not null%}
+					<div>
+						<p>
+							{{ executive.mandateType|upper }}
+							&#8239;:
+							<strong>{{ executive.legalPerson ? : executive.naturalPerson }}
+							</strong>
+						</p>
+					</div>
+				{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}
+{% block javascripts %}
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        {{ gc_draw(piechart, 'div_chart') }}
+    </script>
+{% endblock %}
+</body>
+</html>

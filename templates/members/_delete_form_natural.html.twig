@@ -1,0 +1,26 @@
+{% if roleAsso is defined %}
+	<form method="post" action="{{ path('members_deleteNatural', {'id': associate.naturalPerson.id}) }}" onsubmit="return confirm('Voulez-vraiment supprimer ce membre de votre liste ?');">
+		<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ associate.naturalPerson.id) }}">
+		<button class="button button-light d-flex align-items-end">Supprimer</button>
+	</form>
+{% elseif roleExe is defined %}
+	<form method="post" action="{{ path('members_deleteNatural', {'id': executive.naturalPerson.id}) }}" onsubmit="return confirm('Voulez-vraiment supprimer ce membre de votre liste ?');">
+		<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ executive.naturalPerson.id) }}">
+		<button class="button button-light d-flex align-items-end">Supprimer</button>
+	</form>
+{% elseif roleOther is defined %}
+	<form method="post" action="{{ path('members_deleteNatural', {'id': other.naturalPerson.id}) }}" onsubmit="return confirm('Voulez-vraiment supprimer ce membre de votre liste ?');">
+		<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ other.naturalPerson.id) }}">
+		<button class="button button-light d-flex align-items-end">Supprimer</button>
+	</form>
+{% elseif person is defined %}
+	<form method="post" action="{{ path('members_deleteNatural', {'id': person.id}) }}" onsubmit="return confirm('Voulez-vraiment supprimer ce membre de votre liste ?');">
+		<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ person.id) }}">
+		<button class="button button-light d-flex align-items-end">Supprimer</button>
+	</form>
+{% elseif naturalPerson is defined %}
+	<form method="post" action="{{ path('members_deleteNatural', {'id': naturalPerson.id}) }}" onsubmit="return confirm('Voulez-vraiment supprimer ce membre de votre liste ?');">
+		<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ naturalPerson.id) }}">
+		<button class="button button-light d-flex align-items-end">Supprimer</button>
+	</form>
+{% endif %}

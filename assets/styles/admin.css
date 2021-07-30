@@ -1,0 +1,212 @@
+/* Navbar Aside start */
+
+.wrapper {
+    display: flex;
+    position: relative;
+    font-family: var(--titlefont);
+}
+
+.wrapper .sidebar {
+    width: 250px;
+    height: 100%;
+    background: var(--bannergray);
+    padding: 5px;
+    position: fixed;
+    text-align: center;
+}
+
+.wrapper .sidebar img {
+    padding: 40px 20px;
+}
+
+/* Nav */
+
+.wrapper .sidebar ul {
+    padding: 0 20px;
+    margin-top: 120px;
+}
+
+.wrapper .sidebar ul li {
+    border-radius: 15px;
+    text-align: center;
+    padding: 5px;
+    box-shadow: 0px 10px 20px 0px rgba(33, 20, 106, 0.1);
+    margin-bottom: 40px;
+    border-bottom: 1px solid var(--lightgreen);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.navSelect {
+    background: var(--primarygreen);
+}
+
+.wrapper .sidebar ul li {
+    color: var(--white);
+    display: block;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+.wrapper .sidebar ul li:hover {
+    background-color: var(--primarygreen);
+}
+
+
+/* Navbar Top start */
+
+.header {
+    min-width: 22vh;
+    padding: 20px;
+    right: 0;
+    border-radius: 0 0 0 30px;
+    background: var(--bannergray);
+    color: var(--white);
+    box-shadow: 0px 10px 20px 0px rgba(33, 20, 106, 0.1);
+    border-bottom: 1px solid var(--lightgreen);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    position: static;
+}
+
+
+/* Navbar Top end */
+
+
+/* Main Content page */
+
+.main_content .h1structure {
+    color: var(--bannergray);
+}
+
+.wrapper .main_content .info {
+    margin: 50px 20px 0 300px;
+    line-height: 25px
+}
+
+.wrapper .main_content .info div {
+    margin-bottom: 20px
+}
+
+@media (min-width: 1000px) {
+    .main_content {
+        position: relative;
+        left: 250px;
+        width: 75%;
+        margin: 0 30px 50px 30px;
+    }
+    .navxs {
+        display: none;
+    }
+}
+
+@media (min-width: 900px) {
+    .navlg {
+        display: none;
+    }
+    .main_content {
+        margin: 0 30px 50px 30px;
+    }
+}
+
+@media (min-width: 300px) {
+    .navlg {
+        display: none;
+    }
+    .main_content {
+        margin: 0 30px 50px 30px;
+    }
+}
+
+/* Structure page start */
+.main_content .s-card-title {
+    background-color: var(--primarygreen);
+    color: var(--white) !important;
+    z-index: 99;
+}
+.structure_card {
+    transform: translateY(-50%);
+}
+    /* Category table */
+.cat_table thead th {
+    color : var(--primarygray);
+}
+.cat_table tfoot td {
+    color : var(--primarygray);
+}
+.cat_table tbody td a {
+    color : var(--primarygray) !important;
+}
+.table-responsive-stack .table-responsive-stack-thead {
+    font-weight: bold;
+    color : var(--primarygray);
+  }
+
+@media screen and (max-width: 959px) {
+    .table-responsive-stack tr {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+      }
+    .table-responsive-stack td,
+    .table-responsive-stack th {
+        display:block;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+      }
+    .table-responsive-stack tr {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        border-bottom: 0,1px transparent #ccc;
+        display:block;
+     }
+    .table-responsive-stack td {
+        float: left\9;
+        width:100%;
+    }
+  }
+
+  /* Gouvernance print start */
+  @media print {
+    #gprint {
+        background-color: var(--primarygreen);
+        color: var(--white) !important;
+        z-index: 99;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        margin: 0;
+        padding: 15px;
+        font-size: 14px;
+        line-height: 18px;
+        }
+    #gprint button {
+        display : none;
+    }
+    #gprint a {
+        display : none;
+    }
+    }
+    div#piechart {
+        margin-left:-30%;
+    }
+
+  /* Gouvernance print end */
+
+.send {
+    font-size: 20px !important;
+    color: var(--bannergray);
+}
+#notif {
+    color: var(--white)!important;
+}
+#logout {
+    color: var(--primarygreen)!important;
+}
+
+/* Structure page end */

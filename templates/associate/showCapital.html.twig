@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}-
+	{{app.user.structure.name}}
+{% endblock %}
+
+{% block navbar %}
+	{% include 'admin/_navbarAdmin.html.twig' %}
+{% endblock %}
+
+
+{% block body %}
+<div class="main_content pt-2">
+	<h1 class="h1structure text-left me-5 mt-3">{{app.user.structure.name}}</h1>
+	<h1 class="text-left mt-2">État du capital</h1>
+    <div class="d-flex justify-content-start">
+		<a class="button button-light my-3" href="{{ path('structure_index', {'id': app.user.structure.id}) }}">Retour</a>
+	</div>
+	<div class="container mt-5 col-lg-11 col-md-11 position-relative ms-sm-3 ms-md-5">
+        <div class="container start-0 p-0 mt-3">
+			<div id="div_chart"></div>
+        </div>
+	</div>
+    <div class="container p-3 mt-5">
+		<table class="table table-hover cat_table table-responsive-stack" id="tableOne">
+			<thead>
+				<tr>
+					<th scope="col">NAME</th>
+					<th scope="col">NOMBRE DE PARTS</th>
+					<th scope="col">CAPITAL SOUSCRIT</th>
+					<th scope="col">CAPITAL LIBÉRÉ</th>
+					<th scope="col">RESTE À LIBÉRER</th>
+					<th scope="col"></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for associate in associates %}
+                    {% if associate.subscriptionDate is not null and associate.withdrawalRequestDate is null %}
+					<tr>
+						<td>
+							<strong class="text-dark">{{ associate.legalPerson ? : associate.naturalPerson }}</strong>
+						</td>
+						<td>
+							<strong class="text-dark">{{ associate.numberOfShare }}</strong>
+						</td>
+						<td>
+							<strong class="text-dark">{{ (associate.numberOfShare * structure.shareUnitValue) |number_format(0, '.', ' ') }}&#8239;€</strong>
+						</td>
+						<td>
+							<strong class="text-dark">{{ associate.subscribedCapitalAmountPaidUp |number_format(0, '.', ' ') }}&#8239;€</strong>
+						</td>
+						<td>
+							<strong class="text-dark">{{((associate.numberOfShare * structure.shareUnitValue) - associate.subscribedCapitalAmountPaidUp) |number_format(0, '.', ' ') }}&#8239;€</strong>
+						</td>
+						<td>
+							{% if is_granted("ROLE_ADMIN") %}
+							<a class="button button-light" href="{{ path('members_index') }}">Modifier</a>
+							{% endif %}
+						</td>
+					</tr>
+				</tbody>
+                {% endif %}
+			{% endfor %}
+				<tfoot>
+					<tr>
+						<th scope="row">TOTAL</th>
+						<td><strong>{{ totalNumberofShare }}</strong></td>
+						<td><strong>{{ suscribedCapitalTotal |number_format(0, '.', ' ') }}&#8239;€</strong></td>
+						<td><strong>{{ paidUpCapitalTotal |number_format(0, '.', ' ') }}&#8239;€</strong></td>
+						<td><strong>{{ tobePaidUpCapitalTotal |number_format(0, '.', ' ') }}&#8239;€</strong></td>
+					</tr>
+				</tfoot>
+		</table>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+	{% if piechart is not empty %}
+        {% if associates is not empty %}
+        {{ parent() }}
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script type="text/javascript">
+            {{ gc_draw(piechart, 'div_chart') }}
+        </script>
+	    {% endif %}
+	{% endif %}
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}-
+	{{app.user.structure.name}}
+{% endblock %}
+
+{% block navbar %}
+    {% include 'admin/_navbarAdmin.html.twig' %}
+{% endblock %}
+
+{% block body %}
+<div class="main_content pt-2">
+	<h1 class="h1structure text-left mt-3 me-5">{{app.user.structure.name}}</h1>
+	<h1 class="text-left mt-2">Utilisateurs</h1>
+    <div class="d-flex justify-content-start my-4">
+        <a class="button button-light d-flex align-items-end" href="{{ path('user_show', {'id': app.user.id}) }}">Mon Compte</a>
+    </div>
+    <div class="d-flex justify-content-end my-4">
+        {% if is_granted("ROLE_ADMIN") %}
+        <a class="button button-light d-flex align-items-end" href="{{ path('user_new', {'id': app.user.structure.id}) }}">Ajouter</a>
+        {% endif %}
+    </div>
+    <table class="table table-striped table-hover cat_table table-responsive-stack" id="tableOne">
+        <thead>
+            <tr>
+                <th>NOM</th>
+                <th>PRÉNOM</th>
+                <th>EMAIL</th>
+                <th>ROLE</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                {% if user.structure == app.user.structure and "ROLE_SUPERADMIN" not in user.roles %}
+                    <tr>
+                        <td>{{ user.lastname }}</td>
+                        <td>{{ user.firstname }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% if "ROLE_ADMIN" in user.roles %}
+                            Admin
+                            {% else %}
+                            Utilisateur
+                            {% endif %}
+                        </td>
+
+                        <td class="d-flex">
+                            <a class="button button-light me-1" href="{{ path('user_show', {'id': user.id}) }}">Voir</a>
+                            {% if is_granted('ROLE_ADMIN') %}
+                            <a class="button button-light me-1" href="{{ path('user_edit', {'id': user.id}) }}">Éditer</a>
+                            {{ include('user/_delete_form.html.twig') }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

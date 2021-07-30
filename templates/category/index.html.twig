@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}-
+	{{app.user.structure.name}}
+{% endblock %}
+
+{% block navbar %}
+	{% include 'admin/_navbarAdmin.html.twig' %}
+{% endblock %}
+
+{% block body %}
+<div class="main_content pt-2">
+	<h1 class="h1structure text-left me-5 mt-3">{{app.user.structure.name}}</h1>
+	<h1 class="text-left mt-2">Catégories</h1>
+    <div class="d-flex justify-content-start my-4">
+        <a class="button button-light d-flex align-items-end" href="{{ path('structure_index', {'id': app.user.structure.id}) }}">Retour</a>
+    </div>
+    <div class="d-flex justify-content-end my-4">
+        {% if is_granted("ROLE_ADMIN") %}
+        <a class="button button-light d-flex align-items-end" href="{{ path('category_new', {'id': app.user.structure.id}) }}">Ajouter</a>
+        {% endif %}
+    </div>
+
+    <table class="table table-striped table-hover cat_table table-responsive-stack" id="tableOne">
+        <thead>
+            <tr>
+                <th>CATÉGORIE</th>
+                <th>DESCRIPTION</th>
+                <th>TITRE NOMBRE MINIMUM</th>
+                <th>TICKET D'ENTRÉE</th>
+                <th>SOUSCRIPTION MAXIMALE</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for category in categories %}
+            <tr>
+                <td>{{ category.name }} {{ category.prefixClassification }}</td>
+                <td>{{ category.description }}</td>
+                <td>{{ category.nbMinAction }}</td>
+                <td>{{ (category.nbMinAction * category.shareValue) |number_format(0, '.', ' ') }}&#8239;€</td>
+                {% if category.nbMaxAction is not null %}
+                    <td>{{ (category.nbMaxAction * category.shareValue) |number_format(0, '.', ' ') }}&#8239;€</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+                <td>
+                    {% if is_granted("ROLE_ADMIN") %}
+                    <a class="button button-light" href="{{ path('category_edit', {'idStructure': app.user.structure.id, 'slug' : category.slug }) }}">Modifer</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">Aucune catégorie trouvée</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

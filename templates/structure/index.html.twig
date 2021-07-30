@@ -1,0 +1,156 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}-
+	{{structure.name}}
+{% endblock %}
+
+{% block navbar %}
+	{% include 'admin/_navbarAdmin.html.twig' %}
+{% endblock %}
+
+{% block body %}
+<div class="main_content pt-2">
+	<h1 class="h1structure text-left me-5 mt-3">{{app.user.structure.name}}</h1>
+	<h1 class="text-left mt-2">Synthèse</h1>
+    <div class="d-flex justify-content-start my-4">
+        <a class="button button-light d-flex align-items-end" href="{{ path('structure_dowload', {'id': structure.id}) }}"><span class="material-icons">picture_as_pdf</span>Éditer</a>
+    </div>
+    <div class="row col-12 ms-2">
+        <div class="container mt-5 border border-secondary col-lg-5 col-md-11 position-relative ms-sm-3 ms-md-5">
+            <h5 class="position-absolute top-0 start-0 text-left s-card-title rounded p-2 ms-2 structure_card">Structure</h5>
+            <div class="container p-3 mt-5 bg-light col-11">
+                <p>RAISON SOCIALE : <strong class="text-dark">{{ structure.name }}</strong></p>
+                <p>SIREN : <strong class="text-dark">{{ structure.siren|number_format(0, '.', ' ') }}</strong></p>
+                <p>VILLE RCS :
+                    <strong class="text-dark">{{ structure.tradeAndCompanyRegister }}</strong></p>
+                <p>FORME JURIDIQUE :
+                    <strong class="text-dark">{{ structure.companyForm }}</strong></p>
+                <p>EMAIL :
+                    <strong class="text-dark">{{ structure.email }}</strong></p>
+                <p>TÉLÉPHONE :
+                    <strong class="text-dark">{{ structure.telephone }}</strong></p>
+                <p>TÉLÉPHONE 2 :
+                    <strong class="text-dark">{{ structure.telephone2 }}</strong></p>
+                <p>INFOS :
+                    <strong class="text-dark">{{ structure.description }}</strong></p>
+            </div>
+            <div class="d-flex justify-content-end my-3">
+                <a class="button button-light me-3" href="{{ path('structure_show', {'id': structure.id}) }}">Détail</a>
+            </div>
+        </div>
+        <div class="container mt-5 border border-secondary col-lg-5 col-md-11 position-relative ms-sm-3 ms-md-5">
+            <h5 class="position-absolute top-0 start-0 text-left s-card-title rounded p-2 ms-2 structure_card">État du capital</h5>
+            <div class="container start-0 p-0 mt-5">
+                <div id="div_chart"></div>
+            </div>
+            <div class="container p-3 mt-2 bg-light col-11">
+                <p>VALEUR UNITAIRE DU TITRE : <strong class="text-dark">{{ structure.shareUnitValue }}&#8239;€</strong></p>
+                <p>TOTAL DES TITRES SOUSCRITS : <strong class="text-dark">{{ totalNumberofShare }}</strong></p>
+                <p>TOTAL CAPITAL SOUSCRIT : <strong class="text-dark">{{ suscribedCapitalTotal |number_format(0, '.', ' ') }}&#8239;€</strong></p>
+            </div>
+            <div class="d-flex justify-content-end my-3">
+                <a class="button button-light me-3" href="{{path('capital_show', {'id' : app.user.structure.id})}}">Détail</a>
+                <a class="button button-light" href="#">Appel à libération</a>
+            </div>
+        </div>
+    </div>
+    <div class="row col-12 ms-2">
+        <div class="container mt-5 border border-secondary col-lg-5 col-md-11 position-relative ms-sm-3 ms-md-5">
+            <h5 class="position-absolute top-0 start-0 text-left s-card-title rounded p-2 ms-2 structure_card">Catégories d'associés</h5>
+            <div class="container p-3 mt-5 bg-light col-11"  style="height: 400px;overflow: scroll;">
+                <table class="table table-hover cat_table">
+                    <thead>
+                        <tr>
+                            <th scope="col">CATÉGORIE</th>
+                            <th scope="col">TYPE D'ASSOCIÉS</th>
+                            <th scope="col">TICKET D'ENTRÉE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for category in structure.categories %}
+                        <tr>
+                            <th scope="row">{{ category.name }} {{ category.prefixClassification }}</th>
+                            <td>{{ category.description }}</td>
+                            <td>{{ (category.nbMinAction * category.shareValue) |number_format(0, '.', ' ') }}&#8239;€</td>
+                        </tr>
+                    </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="d-flex justify-content-end my-3">
+                <a class="button button-light me-3" href="{{ path('category_index', {'id' : app.user.structure.id}) }}">Détail</a>
+                <a class="button button-light" href="#">Candidature</a>
+            </div>
+        </div>
+        <div class="container mt-5 border border-secondary col-lg-5 col-md-11 position-relative ms-sm-3 ms-md-5">
+            <h5 class="position-absolute top-0 start-0 text-left s-card-title rounded p-2 ms-2 structure_card">Collèges</h5>
+            <div class="container p-3 mt-5 bg-light col-11" style="height: 400px;overflow: scroll;">
+                <table class="table table table-hover cat_table">
+                    <thead>
+                        <tr>
+                            <th>COLLÈGE</th>
+                            <th>TYPE D'ASSOCIÉ</th>
+                            <th>VOTE</th>
+                            <th>RÉPARTITION</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for college in structure.colleges %}
+                        <td>{{ college.name }}</td>
+                        <td>{{ college.prefixClassification }}</td>
+                        <td>{{ college.description }}</td>
+                        <td>{{ college.nbVotingRight }}&#8239;%</td>
+                        <td>
+                    </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="d-flex justify-content-end my-3">
+                <a class="button button-light me-3" href="{{ path('college_index', {'id' : app.user.structure.id}) }}">Détail</a>
+                <a class="button button-light" href="#">Préparer</a>
+            </div>
+        </div>
+    </div>
+    <div class="row col-12 ms-2" id="gprint">
+        <div class="position-relative container mt-5 border border-secondary col-lg-5 col-md-11 position-relative ms-sm-3 ms-md-5">
+            <h5 class="position-absolute top-0 start-0 text-left s-card-title rounded p-2 ms-2 structure_card">Gouvernance</h5>
+            <div class="container p-3 mt-5 bg-light col-11">
+                <p class="text-dark">La société est dirigée par &#8239;:</p>
+                    {% for executive in structure.executives %}
+                        {% if executive.mandateStartDate is not null %}
+                        <div>
+                            <p class="ms-3"> {{ executive.mandateType|upper }} &#8239;: <strong class="text-dark">{{ executive.legalPerson ? : executive.naturalPerson }} </strong></p>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+            </div>
+                <div class="d-flex justify-content-end my-3">
+                    <a class="button button-light me-3" href="{{ path('executive_index', {'id' : app.user.structure.id})}}">Détail</a>
+                    <button class="button button-light " id="print" onclick="printContent('gprint');">Imprimer</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+	{% if piechart is not empty %}
+        {% if associates is not empty %}
+        {{ parent() }}
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script type="text/javascript">
+            {{ gc_draw(piechart, 'div_chart') }}
+        </script>
+	    {% endif %}
+	{% endif %}
+    <script>
+        function printContent(el){
+        var restorepage = $('body').html();
+        var printcontent = $('#' + el).clone();
+        $('body').empty().html(printcontent);
+        window.print();
+        $('body').html(restorepage);
+        }
+    </script>
+{% endblock %}

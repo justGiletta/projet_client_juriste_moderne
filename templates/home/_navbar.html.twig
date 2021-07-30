@@ -1,0 +1,62 @@
+<header class="header_area sticky-top">
+	<nav class="navbar navbar-expand-lg sticky-top">
+		<div class="ms-3">
+			{% if app.user %}
+				{% if is_granted('ROLE_SUPERADMIN') %}
+				<a class="navbar-brand" href="{{ path('superadmin') }}"><img src="{{ asset('build/images/Logos/LogoLJMBWhite.png') }}" width="150px" alt="le juriste moderne logo"></a>
+				{% else %}
+				<a class="navbar-brand" href="{{ path('structure_index', {'id' : app.user.structure.id}) }}"><img src="{{ asset('build/images/Logos/LogoLJMBWhite.png') }}" width="150px" alt="le juriste moderne logo"></a>
+				{% endif %}
+			{% else %}
+				<a class="navbar-brand" href="{{ path('landing_home') }}"><img src="{{ asset('build/images/Logos/LogoLJMBWhite.png') }}" width="150px" alt="le juriste moderne logo"></a>
+			{% endif %}
+		</div>
+		<div class="d-lg-none d-flex justify-content-center align-items-end">
+			{% if app.user %}
+				<a class="d-flex align-items-end" href="{{ path('app_logout') }}"><span class="material-icons pt-2" id="logout">logout</span></a>
+			{% else %}
+				<a class="pt-2" style="height:60px" href="{{ path('app_login') }}"><span class="material-icons" id="notif">account_circle</span></a>
+			{% endif %}
+		</div>
+		<div class="d-md-flex justify-content-center align-items-end me-4">
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="material-icons pt-1 menu">menu</span>
+			</button>
+		</div>
+		<div class="container-fluid">
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav ms-3 me-auto mb-2 mb-lg-0">
+					<li class="nav-item">
+						<a class="nav-link {% if page == 'landing_home'%} {% else %}item_not_select{% endif %}" href="{{ path('landing_home') }}">Accueil</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link {% if page == 'landing_features'%} {% else %}item_not_select{% endif %}" href="{{ path('landing_features') }}">Fonctionnalités</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link {% if page == 'landing_pricing'%} {% else %}item_not_select{% endif %}" href="{{ path('landing_pricing') }}">Prix</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link {% if page == 'landing_contact'%} {% else %}item_not_select{% endif %}" href="{{ path('landing_contact') }}">Contact</a>
+					</li>
+				</ul>
+				<div class="logxs d-lg-flex justify-content-end align-items-center">
+					{% if app.user %}
+						<p class="text-light m-0">{{ app.user.firstname }} {{ app.user.lastname }}</p>
+						<a style="height:60px" href="{{ path('app_logout') }}"><span class="material-icons mx-3" id="logout">logout</span></a>
+					{% else %}
+						<a style="height:60px" href="{{ path('app_login') }}"><span class="material-icons mx-3" id="notif">account_circle</span></a>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</nav>
+	{% for category, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ category }} text-center mb-0">
+                {{ message }}
+            </div>
+		{% endfor %}
+    {% endfor %}
+	{% include "@CHCookieConsent/cookie_consent_styling.html.twig" %}
+	{{ render_esi(path('ch_cookie_consent.show_if_cookie_consent_not_set')) }}
+</header>

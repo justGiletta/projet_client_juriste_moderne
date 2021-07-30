@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}-
+	{{app.user.structure.name}}
+{% endblock %}
+
+{% block navbar %}
+	{% include 'admin/_navbarAdmin.html.twig' %}
+{% endblock %}
+
+{% block body %}
+<div class="main_content pt-2">
+	<h1 class="h1structure text-left me-5 mt-3">{{app.user.structure.name}}</h1>
+	<h1 class="text-left mt-2">Collèges</h1>
+    <div class="d-flex justify-content-start my-4">
+        <a class="button button-light d-flex align-items-end" href="{{ path('college_index', {'id': app.user.structure.id}) }}">Retour</a>
+    </div>
+
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+    <div class="d-flex justify-content-start my-4">
+    <button class="button button-light me-4">{{ button_label|default('Sauvegarder') }}</button>
+        {{ form_end(form) }}
+
+        {{ include('college/_delete_form.html.twig') }}
+    </div>
+</div>
+{% endblock %}

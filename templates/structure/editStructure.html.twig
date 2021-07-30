@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}-
+	{{structure.name}}
+{% endblock %}
+
+{% block navbar %}
+	{% include 'admin/_navbarAdmin.html.twig' %}
+{% endblock %}
+
+{% block body %}
+	<div class="main_content pt-2">
+		<h1 class="h1structure text-left mt-3">{{structure.name}}</h1>
+		<h1 class="text-left mt-2 mb-5">Structure</h1>
+		<div class="d-flex justify-content-start">
+			<a class="button button-light my-3" href="{{ path('structure_show', {'id': structure.id}) }}">Retour</a>
+		</div>
+		<div class="container mt-5 border border-secondary col-11 position-relative">
+			<h5 class="position-absolute top-0 start-0 text-left s-card-title rounded p-2 ms-2 structure_card">Structure</h5>
+			<div class="container p-3 mt-3 col-11">
+			{{ form_start(structureForm) }}
+				{{ form_label(structureForm.companyForm, 'Forme Juridique', {'label_attr': {'class': 'my-2'}}) }}
+				{{ form_errors(structureForm) }}
+				{{ form_widget(structureForm.companyForm) }}
+
+				{{ form_label(structureForm.name, 'Raison sociale', {'label_attr': {'class': 'my-2'}}) }}
+				{{ form_errors(structureForm) }}
+				{{ form_widget(structureForm.name) }}
+
+				{{ form_label(structureForm.siren, 'Siren', {'label_attr': {'class': 'my-2'}}) }}
+				{{ form_errors(structureForm) }}
+				{{ form_widget(structureForm.siren) }}
+
+				{{ form_label(structureForm.tradeAndCompanyRegister, 'RCS Ville', {'label_attr': {'class': 'my-2'}}) }}
+				{{ form_errors(structureForm) }}
+				{{ form_widget(structureForm.tradeAndCompanyRegister) }}
+
+				{{ form_label(structureForm.description, 'Infos', {'label_attr': {'class': 'my-2'}}) }}
+				{{ form_errors(structureForm) }}
+				{{ form_widget(structureForm.description) }}
+				{% if is_granted("ROLE_ADMIN") %}
+				<div class="d-flex justify-content-end">
+					<button class="button button-light mt-5 me-3">{{ button_label|default('Modifier') }}</button>
+				</div>
+				{% endif %}
+			</div>
+		</div>
+		<div class="container mt-5 border border-secondary col-11 position-relative">
+			<h5 class="position-absolute top-0 start-0 text-left s-card-title rounded p-2 ms-2 structure_card" style="width: 185px;">Représentants</h5>
+			<div class="container p-3 mt-3 col-11">
+				{% if is_granted("ROLE_ADMIN") %}
+				<div class="d-flex justify-content-end">
+					<a class="button button-light mt-2 me-3" href="{{ path('members_index', {'id': app.user.structure.id}) }}">Ajouter / Supprimer</a>
+				</div>
+				{% endif %}
+				{{ form_label(structureForm.mainRepresentative, 'Principal représentant',{'label_attr': {'class': 'my-2'}}) }}
+				{{ form_errors(structureForm) }}
+				{{ form_widget(structureForm.mainRepresentative) }}
+
+				{{ form_label(structureForm.secondRepresentative, 'Second représentant',{'label_attr': {'class': 'my-2'}}) }}
+				{{ form_errors(structureForm) }}
+				{{ form_widget(structureForm.secondRepresentative) }}
+				{% if is_granted("ROLE_ADMIN") %}
+				<div class="d-flex justify-content-end">
+					<button class="button button-light mt-5 me-3">{{ button_label|default('Modifier') }}</button>
+				</div>
+				{% endif %}
+			{{ form_end(structureForm) }}
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
